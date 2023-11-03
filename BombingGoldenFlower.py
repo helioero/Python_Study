@@ -13,12 +13,6 @@ def GenerateList():
         cards_list.append(i)
     return cards_list
 
-def RandomPoint():
-    
-    point_num = randrange(1, 53)
-    return point_num
-
-
 def GenerateCards(count):
     
     all_cards_list = []
@@ -26,7 +20,7 @@ def GenerateCards(count):
     i = 0
     random_cards_list = []
     while True:
-        random_num = RandomPoint()
+        random_num = randrange(1, 53)
         if all_cards_list.count(random_num):
             random_cards_list.append(random_num)
             all_cards_list.remove(random_num)
