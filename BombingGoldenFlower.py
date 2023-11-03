@@ -193,7 +193,7 @@ def GenerateUserInfoDictList(user_count, user_init_chips):
     user_info_dict_list = {}
     for i in range(user_count):
         
-        dict_v = {'view': False, 'drop': False, 'disuse': False}
+        dict_v = {'view': False, 'drop': False, 'disuse': False, 'color_card': [], 'size_card': 0}
         dict_v['name'] = '000' + str(i)
         dict_v['chips'] = user_init_chips
         user_info_dict_list[i] = dict_v
@@ -264,7 +264,8 @@ class Game(object):
             info['unview_count'] = info['valid_user']
             info['undrop_count'] = info['valid_user']
             info['undrop_list'] = []
-                        
+            
+            print(f"info['valid_user'] is {info['valid_user']}")
             # 如果 玩家 只剩一个，退出循环       
             if info['valid_user'] == 1:
                 print(f"{'*' * 50}")
@@ -278,6 +279,14 @@ class Game(object):
             # 生成 当前已有玩家的牌
             self.GetCards(info['valid_user'])
             
+            # 将牌的花色以及大小写入字典
+            card_index = 0
+            for items in range(self.user_count):
+                if not info[items]['disuse']:
+                    info[items]["color_card"] = self.user_color_card_list[card_index]
+                    info[items]["size_card"] = self.user_size_card_list[card_index]
+                    card_index += 1
+            
             # 初始化内部 while 循环变量
             rounds_over = False
             internal_rounds = 1
@@ -287,7 +296,7 @@ class Game(object):
             while True:
                 
                 print(f"{'#' * 30 } 第 {round_count} 局, 第 {internal_rounds} 回合 {'#' * 30 }")
-                
+                print(f"TEST self.user_count is {self.user_count}")
                 for dict_i in range(self.user_count):
                     
                     if info[dict_i]['disuse'] or info[dict_i]['drop']:
@@ -325,7 +334,7 @@ class Game(object):
                         if not info[dict_i]['view']:
                             info[dict_i]['view'] = True
                             info['unview_count'] -= 1
-                        print(f"玩家 {info[dict_i]['name']} 的牌是： {self.user_color_card_list[dict_i]}")
+                        print(f"玩家 {info[dict_i]['name']} 的牌是： {info[dict_i]['color_card']}")
                         print(f"玩家 {info[dict_i]['name']} 剩余筹码 {info[dict_i]['chips']}")
                         print(f"当前池子筹码为 {chips_pool}")
                         choose_view_card = input("1.弃牌 2.跟注，请输入(1/2): ")
@@ -334,7 +343,6 @@ class Game(object):
                             follow_amount = int(input(f"请输入跟注的筹码({last_follow_amount} - 1000): "))
                             if follow_amount >= last_follow_amount:
                                 if info[dict_i]['chips'] >= last_follow_amount:
-                                    last_follow_amount *= 2
                                     info[dict_i]['chips'] -= follow_amount
                                     chips_pool += follow_amount
                                     last_follow_amount = follow_amount
@@ -361,22 +369,20 @@ class Game(object):
                         
                     # 不看牌 玩家下盲注
                     elif view_card == '' or view_card == '2':
-                        unknow_card_follow_amount = int(input(f"请输入盲注筹码({last_follow_amount} - 1000): "))
+                        unknow_card_follow_amount = int(input(f"请输入盲注筹码({last_follow_amount / 2} - 1000): "))
                         info[dict_i]['chips'] -= unknow_card_follow_amount
                         chips_pool += unknow_card_follow_amount
-                        last_follow_amount = unknow_card_follow_amount
+                        last_follow_amount = unknow_card_follow_amount * 2
                     else:
                         print("!!!! 输入错误，请重新输入 1/2 (1、看牌 2、不看牌)")
                     
                     # 开牌
-                    print(info['undrop_count'])
-                    print(info['unview_count'])
                     if info['undrop_count'] == 2 and info['unview_count'] == 0:
                         open_card = input(f"当前玩家剩余 {info['undrop_count']} ，请输入 1/2 (1. 开牌 2. 不开牌): ")
                         if open_card == '1':
-                            print(f"玩家 {info[info['undrop_list'][0]]['name']} 的牌为  {self.user_color_card_list[info['undrop_list'][0]]}")
-                            print(f"玩家 {info[info['undrop_list'][1]]['name']} 的牌为  {self.user_color_card_list[info['undrop_list'][1]]}")
-                            if self.user_size_card_list[info['undrop_list'][0]] > self.user_size_card_list[info['undrop_list'][1]]:
+                            print(f"玩家 {info[info['undrop_list'][0]]['name']} 的牌为  {info[info['undrop_list'][0]]['color_card']}")
+                            print(f"玩家 {info[info['undrop_list'][1]]['name']} 的牌为  {info[info['undrop_list'][1]]['color_card']}")
+                            if info[info['undrop_list'][0]]['size_card'] > info[info['undrop_list'][1]]['size_card']:
                                 info[info['undrop_list'][0]]['chips'] += chips_pool
                                 print(f"{'*' * 50}")
                                 print(f"**   玩家 {info[info['undrop_list'][0]]['name']} 赢，赢得筹码 {chips_pool}, 剩余 {info[info['undrop_list'][0]]['chips']} 筹码  **")
