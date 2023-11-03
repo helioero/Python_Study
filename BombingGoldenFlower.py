@@ -3,20 +3,15 @@
 这是一个 炸金花 的纸牌游戏, 在命令行运行
 由 Helioer 学习 N 天后独家撰写, 如果有疑问请咨询： helioer@sina.cn
 '''
-
+import time
 from random import randrange
-
-def GenerateList():
-    
-    cards_list = []
-    for i in range(1,53):
-        cards_list.append(i)
-    return cards_list
 
 def GenerateCards(count):
     
     all_cards_list = []
-    all_cards_list = GenerateList()
+    for i in range(1,53):
+        all_cards_list.append(i)
+    
     i = 0
     random_cards_list = []
     while True:
@@ -197,6 +192,22 @@ def GenerateUserInfoDictList(user_count, user_init_chips):
     user_info_dict_list["undrop_list"] = []
     user_info_dict_list["valid_user"] = user_count
     return user_info_dict_list
+
+def LoadingCard():
+    
+    scale = 50
+    print("正在洗牌中, 5 秒后开始...".center(scale // 2,"-"))
+    start = time.perf_counter()
+    for i in range(scale + 1):
+        a = "#" * i
+        b = "." * (scale - i)
+        c = (i / scale) * 100
+        dur = time.perf_counter() - start
+        print("\r{:^3.0f}%[{}->{}]{:.2f}s".format(c,a,b,dur),end = "")
+        time.sleep(0.1)
+
+    print("\n"+"洗牌完成".center(scale // 2,"-"))
+
     
 class Game(object):
     
@@ -259,14 +270,16 @@ class Game(object):
             info['undrop_count'] = info['valid_user']
             info['undrop_list'] = []
             
-            print(f"info['valid_user'] is {info['valid_user']}")
             # 如果 玩家 只剩一个，退出循环       
             if info['valid_user'] == 1:
-                print(f"{'*' * 50}")
-                print(f"{'*' * 2}  玩家 {info[item]['name']} 是本次活动大赢家, 该玩家总共筹码 {info[item]['chips']}  {'*' * 2}")
-                print(f"{'*' * 50}")
+                print(f"{'*' * 80}")
+                print(f"{'*' * 2}/t/t游戏结束, 玩家 {info[item]['name']} 是本次活动大赢家, 该玩家赢得筹码 {info[item]['chips'] + 10}/t/t{'*' * 2}")
+                print(f"{'*' * 80}")
                 break
             
+            print()
+            LoadingCard()
+            print()
             print(f"{'-' * 50 } 第 {round_count} 局开始 {'-' * 50 }")
             print(f"所有玩家扣除底注 {low_chips}")
             
@@ -290,7 +303,6 @@ class Game(object):
             while True:
                 
                 print(f"{'#' * 30 } 第 {round_count} 局, 第 {internal_rounds} 回合 {'#' * 30 }")
-                print(f"TEST self.user_count is {self.user_count}")
                 for dict_i in range(self.user_count):
                     
                     if info[dict_i]['disuse'] or info[dict_i]['drop']:
@@ -407,9 +419,5 @@ class Game(object):
 
 
 x = Game(4)
-# print(x.user_init_card_list)
-# print(x.user_color_card_list)
-# print(x.user_point_and_color_card_list)
-# print(x.user_size_card_list)
-print(x.Start())
+x.Start()
 
