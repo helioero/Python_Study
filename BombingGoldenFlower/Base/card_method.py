@@ -2,7 +2,7 @@
   此处代码用于实现关于卡牌的相关方法
 """
 import time
-from random import randrange
+from random import randrange, choice
 
 
 class CardMethod:
@@ -11,34 +11,19 @@ class CardMethod:
 
     # 生成对应用户的牌
     def post_cards(self, user_count):
-        all_cards_list = []
-        for i in range(1, 53):
-            all_cards_list.append(i)
-        cards_list = []
-        i = 0
-        while True:
-            random_num = randrange(1, 53)
-            if all_cards_list.count(random_num):
-                cards_list.append(random_num)
-                all_cards_list.remove(random_num)
-                i += 1
-            else:
-                continue
 
-            if user_count * 3 == i:
-                break
-
-        user_cards = []
-        cards = []
-        j = 1
-        for u in range(user_count * 3):
-            user_cards.append(cards_list[u])
-            if j % 3 == 0:
-                cards.append(user_cards)
-                user_cards = []
-            j += 1
-
-        return cards
+        user_card_list = []
+        card_index = [i for i in range(52)]
+        # 初始化用户的列表
+        for i in range(user_count):
+            user_card_list.append([])
+        # 按顺序发牌, 一次发一张
+        for i in range(3):
+            for u in range(user_count):
+                index = choice(card_index)
+                user_card_list[u].append(index)
+                card_index.remove(index)
+        return user_card_list
 
     # 打印输出并记录牌的花色
     def print_color_card(self, card):

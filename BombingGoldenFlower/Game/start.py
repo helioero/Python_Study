@@ -129,7 +129,7 @@ class Game(CardMethod):
                         info[dict_i]['chips'] += chips_pool
                         print(f"{'*' * 50}")
                         print(
-                            f"{'*' * 2}  玩家 {info[dict_i]['name']} 赢，赢得筹码 {chips_pool} 剩余 {info[dict_i]['chips']} 筹码  {'*' * 2}")
+                            f"{'*' * 2}  🎉🎉🎉 玩家 {info[dict_i]['name']} 赢，赢得筹码 {chips_pool} 🎉🎉🎉 {'*' * 2}")
                         print(f"{'*' * 50}")
                         print(f"{'-' * 50} 第 {round_count} 局结束 {'-' * 50}")
                         rounds_over = True
@@ -139,7 +139,7 @@ class Game(CardMethod):
                         info[info['not_folded_list'][0]]['chips'] += chips_pool
                         print(f"{'*' * 50}")
                         print(
-                            f"{'*' * 4}  玩家 {info[info['not_folded_list'][0]]['name']} 赢，赢得筹码 {chips_pool} 剩余 {info[info['not_folded_list'][0]]['chips']} 筹码  {'*' * 4}")
+                            f"{'*' * 4}  🎉🎉🎉 恭喜玩家 {info[info['not_folded_list'][0]]['name']} 赢，赢得筹码 {chips_pool} 🎉🎉🎉{'*' * 4}")
                         print(f"{'*' * 50}")
                         print(f"{'-' * 50} 第 {round_count} 局结束 {'-' * 50}")
                         rounds_over = True
