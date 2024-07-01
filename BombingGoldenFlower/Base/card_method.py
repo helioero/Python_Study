@@ -2,18 +2,16 @@
   此处代码用于实现关于卡牌的相关方法
 """
 import time
-from random import randrange, choice
+from random import choice
 
 
 class CardMethod:
 
-    # 初始化
-
-    # 生成对应用户的牌
-    def post_cards(self, user_count):
-
+    @staticmethod
+    def post_cards(user_count):
+        """ 生成对应用户的牌 """
         user_card_list = []
-        card_index = [i for i in range(52)]
+        card_index = [i for i in range(1, 53)]
         # 初始化用户的列表
         for i in range(user_count):
             user_card_list.append([])
@@ -25,8 +23,9 @@ class CardMethod:
                 card_index.remove(index)
         return user_card_list
 
-    # 打印输出并记录牌的花色
-    def print_color_card(self, card):
+    @staticmethod
+    def print_color_card(card):
+        """ 计算牌的分数以及牌的花色 """
         color_card = []
         for i in range(len(card)):
 
@@ -88,7 +87,9 @@ class CardMethod:
 
         return color_card
 
-    def compute_card_point(self, card):
+    @staticmethod
+    def compute_card_point(card):
+        """ 计算牌面点数大小 """
         color_card = []
         point_card = []
 
@@ -124,7 +125,9 @@ class CardMethod:
 
         return point_card, color_card
 
-    def compute_winner_size(self, point_card, color_card):
+    @staticmethod
+    def compute_winner_size(point_card, color_card):
+        """ 计算牌面积分大小 """
         winner_list = []
         for i in range(len(point_card)):
             point_card[i].sort()
@@ -132,31 +135,32 @@ class CardMethod:
             winner_list.append(point)
             # 判断 3 个数 点数是否相同
             if point_card[i].count(point_card[i][0]) == 3:
-                winner_list[i] += 10000
-            # 判断 3 个数 点数是否为顺子
-            elif point_card[i][0] + 1 == point_card[i][1] and point_card[i][1] + 1 == point_card[i][2]:
-                winner_list[i] += 3000
-                # 判断 3 个数 花色是否相同
-                if color_card[i].count(color_card[i][0]) == 3:
-                    winner_list[i] += 3000
-            elif point_card[i][0] == 2 and point_card[i][1] == 3 and point_card[i][2] == 14:
-                winner_list[i] += 3000
-                # 判断 3 个数 花色是否相同
-                if color_card[i].count(color_card[i][0]) == 3:
-                    winner_list[i] += 3000
-            # 判断 3 个数 其中 2 个点数相同
-            elif point_card[i].count(point_card[i][0]) == 2:
-                winner_list[i] += point_card[i][0] * 200
-            elif point_card[i].count(point_card[i][1]) == 2:
-                winner_list[i] += point_card[i][1] * 200
-            # 判断 3个数 花色是否相同
+                winner_list[i] *= 100000
+            # 判断是否是 同花顺
+            elif color_card[i].count(color_card[i][0]) == 3 and point_card[i][0] + 1 == point_card[i][1] and \
+                    point_card[i][1] + 1 == point_card[i][2]:
+                winner_list[i] *= 10000
+            # 判断是否是 同花
             elif color_card[i].count(color_card[i][0]) == 3:
-                winner_list[i] += 3000
+                winner_list[i] *= 1000
+            # 判断是否为 顺子
+            elif point_card[i][0] + 1 == point_card[i][1] and point_card[i][1] + 1 == point_card[i][2]:
+                winner_list[i] *= 100
+            # 判断 123 顺子
+            elif point_card[i][0] == 2 and point_card[i][1] == 3 and point_card[i][2] == 14:
+                winner_list[i] = 33 * 100
+                # 判断是否是 同花顺
+                if color_card[i].count(color_card[i][0]) == 3:
+                    winner_list[i] = 33 * 1000
+            # 判断 3 个数是否是对子
+            elif point_card[i].count(point_card[i][0]) == 2 or point_card[i].count(point_card[i][1]) == 2:
+                winner_list[i] *= 10
 
         return winner_list
 
-    # 生成用户信息字典列表
-    def generate_user_info_dict_list(self, user_count, user_init_chips):
+    @staticmethod
+    def generate_user_info_dict_list(user_count, user_init_chips):
+        """ 生成用户信息字典列表 """
         user_info_dict_list = {}
         for i in range(user_count):
             dict_v = {'view': False, 'drop': False, 'disuse': False, 'color_card': [], 'size_card': 0,
@@ -169,10 +173,11 @@ class CardMethod:
         user_info_dict_list["valid_user"] = user_count
         return user_info_dict_list
 
-    # 加载进度条
-    def loading_card(self):
-        scale = 50
-        print("正在洗牌中, 5 秒后开始...".center(scale // 2, "-"))
+    @staticmethod
+    def loading_card():
+        """ 加载进度条 """
+        scale = 30
+        print("正在洗牌中, 3 秒后开始...".center(scale // 2, "-"))
         start = time.perf_counter()
         for i in range(scale + 1):
             a = "#" * i

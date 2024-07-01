@@ -19,6 +19,9 @@ class Game(CardMethod):
 
         self.user_init_chips = 1000
         self.user_count = int(user_count)
+        if self.user_count > 17:
+            print('此游戏最多17人玩')
+            exit(1)
         self.user_info_dict_list = self.generate_user_info_dict_list(self.user_count, self.user_init_chips)
 
     # 将用户的牌生成以并计算牌面大小
@@ -36,12 +39,14 @@ class Game(CardMethod):
     def user_input(self, head_amount, dict_item):
 
         while True:
-            user_input_value = input(f"请输入下注的筹码，必须在区间({head_amount} - {self.user_info_dict_list[dict_item]['chips']}): ")
+            user_input_value = input(f"请输入下注的筹码，必须在区间({head_amount} - {self.user_info_dict_list[dict_item]['chips']}), 默认为 {head_amount}: ")
             if user_input_value == '':
-                print("输入的值不为正整数，请重新输入")
-                continue
+                user_input_value = head_amount
+                print(f'玩家下注 {head_amount}')
+                break
             elif user_input_value.isdigit():
                 if head_amount <= int(user_input_value) <= self.user_info_dict_list[dict_item]['chips']:
+                    print(f'玩家下注 {int(user_input_value)}')
                     break
             else:
                 print("输入的值不为正整数，请重新输入")
@@ -52,7 +57,7 @@ class Game(CardMethod):
 
         print(f"{'-' * 50}")
         print("欢迎来到澳门新葡京娱乐城，这里正在进行名为 炸金花 的扑克牌牌局")
-        print(f"本次牌局共有 {self.user_count} 名玩家参加，每名玩家初始筹码为 {self.user_init_chips} ,每轮底注为10")
+        print(f"本次牌局共有 {self.user_count} 名玩家参加，每名玩家初始筹码为 {self.user_init_chips}, 每轮底注为10")
         print("游戏马上开始，祝你玩的开心")
         # 局数初始化
         round_count = 1
@@ -80,7 +85,7 @@ class Game(CardMethod):
                         info[item]['disuse'] = True
                         info['valid_user'] -= 1
 
-            info['unchecked_count'] = info['valid_user']
+            info['unchecked_count'] = 0
             info['not_folded_count'] = info['valid_user']
             info['not_folded_list'] = []
 
@@ -93,7 +98,7 @@ class Game(CardMethod):
                 break
 
             print()
-            self.loading_card()
+            # self.loading_card()
             print()
             print(f"{'-' * 50} 第 {round_count} 局开始 {'-' * 50}")
             print(f"所有玩家扣除底注 {low_chips}")
@@ -129,7 +134,7 @@ class Game(CardMethod):
                         info[dict_i]['chips'] += chips_pool
                         print(f"{'*' * 50}")
                         print(
-                            f"{'*' * 2}  🎉🎉🎉 玩家 {info[dict_i]['name']} 赢，赢得筹码 {chips_pool} 🎉🎉🎉 {'*' * 2}")
+                            f"{'*' * 2} 🎉🎉🎉 玩家 {info[dict_i]['name']} 赢，赢得筹码 {chips_pool} 🎉🎉🎉 {'*' * 2}")
                         print(f"{'*' * 50}")
                         print(f"{'-' * 50} 第 {round_count} 局结束 {'-' * 50}")
                         rounds_over = True
@@ -156,7 +161,7 @@ class Game(CardMethod):
                             info['not_folded_list'].append(dict_i)
                         if not info[dict_i]['view']:
                             info[dict_i]['view'] = True
-                            info['unchecked_count'] -= 1
+                            info['unchecked_count'] += 1
                         print(f"玩家 {info[dict_i]['name']} 的牌是： {info[dict_i]['color_card']}")
                         print(f"玩家 {info[dict_i]['name']} 剩余筹码 {info[dict_i]['chips']}")
                         print(f"当前池子筹码为 {chips_pool}")
@@ -231,5 +236,4 @@ class Game(CardMethod):
                     break
 
 
-x = Game(4)
-x.start()
+
