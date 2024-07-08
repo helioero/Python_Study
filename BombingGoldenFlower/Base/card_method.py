@@ -2,7 +2,7 @@
   此处代码用于实现关于卡牌的相关方法
 """
 import time
-from random import choice
+from random import choice, shuffle, randint
 
 
 class CardMethod:
@@ -12,15 +12,18 @@ class CardMethod:
         """ 生成对应用户的牌 """
         user_card_list = []
         card_index = [i for i in range(1, 53)]
+        # 洗牌
+        shuffle(card_index)
         # 初始化用户的列表
         for i in range(user_count):
             user_card_list.append([])
-        # 按顺序发牌, 一次发一张
+        # 按顺序发牌, 一次发一张, 每人发 3 张
         for i in range(3):
             for u in range(user_count):
                 index = choice(card_index)
                 user_card_list[u].append(index)
                 card_index.remove(index)
+
         return user_card_list
 
     @staticmethod
@@ -33,7 +36,7 @@ class CardMethod:
             for j in range(len(card[i])):
 
                 point = card[i][j]
-                if point <= 13:
+                if 1 <= point <= 13:
                     if point == 1:
                         card_str = "♠️" + "A"
                     elif point == 11:
@@ -44,7 +47,7 @@ class CardMethod:
                         card_str = "♠️" + "K"
                     else:
                         card_str = "♠️" + str(point)
-                elif point < 27:
+                elif 14 <= point <= 26:
                     point -= 13
                     if point == 1:
                         card_str = "♥️" + "A"
@@ -56,7 +59,7 @@ class CardMethod:
                         card_str = "♥️" + "K"
                     else:
                         card_str = "♥️" + str(point)
-                elif point < 40:
+                elif 27 <= point <= 39:
                     point -= 13 * 2
                     if point == 1:
                         card_str = "♣️" + "A"
@@ -159,19 +162,50 @@ class CardMethod:
         return winner_list
 
     @staticmethod
-    def generate_user_info_dict_list(user_count, user_init_chips):
-        """ 生成用户信息字典列表 """
-        user_info_dict_list = {}
-        for i in range(user_count):
-            dict_v = {'view': False, 'drop': False, 'disuse': False, 'color_card': [], 'size_card': 0,
-                      'name': '000' + str(i), 'chips': user_init_chips}
-            user_info_dict_list[i] = dict_v
+    def round_init_pool_user_info_dict(username_list, info, chips_pool, low_chips):
+        # 状态初始化
+        for item in username_list:
+            if not info[item]['disuse']:
+                # 扣除底注 10
+                if info[item]['chips'] >= low_chips:
+                    info[item]['view'] = False
+                    info[item]['drop'] = False
+                    info[item]['win'] = False
+                    info[item]['chips'] -= low_chips
+                    chips_pool += low_chips
+                else:
+                    # 玩家筹码不足，淘汰
+                    print(f"玩家 {item} 剩余筹码 {info[item]['chips']} ，筹码不足，请充值或退出")
+                    info[item]['disuse'] = True
+                    info['valid_user'] -= 1
+                    info['username_list'].remove(item)
 
-        user_info_dict_list["unchecked_count"] = 0
-        user_info_dict_list["not_folded_count"] = user_count
-        user_info_dict_list["not_folded_list"] = []
-        user_info_dict_list["valid_user"] = user_count
-        return user_info_dict_list
+        info['unchecked_count'] = info['valid_user']
+        info['checked_count'] = 0
+        info['not_drop_card_count'] = info['valid_user']
+        info['not_folded_list'] = []
+        return chips_pool, low_chips
+
+    @staticmethod
+    def generate_user_info(user_count, user_init_chips):
+        """ 生成用户信息字典列表 """
+        user_info = {}
+        username_list = []
+        for i in range(user_count):
+            username = str(randint(1000, 10000))
+            dict_v = {'view': False, 'drop': False, 'disuse': False, 'win': False, 'color_card': [], 'size_card': 0,
+                      'chips': user_init_chips}
+            username_list.append(username)
+            user_info[username] = dict_v
+
+        user_info['valid_user'] = user_count
+        user_info['unchecked_count'] = user_info['valid_user']
+        user_info['checked_count'] = 0
+        user_info['not_drop_card_count'] = user_info['valid_user']
+        user_info['not_folded_list'] = []
+        user_info['username_list'] = username_list
+
+        return user_info
 
     @staticmethod
     def loading_card():

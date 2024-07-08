@@ -3,3 +3,4 @@ venv/
 .git
 .DS_Store
 *__pycache__
+test.py
