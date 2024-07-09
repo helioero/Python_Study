@@ -170,12 +170,12 @@ class CardMethod:
         user_color_card_list = self.print_color_card(user_init_card_list)
         user_size_card_list = self.compute_winner_size(user_point_and_color_card_list[0],
                                                        user_point_and_color_card_list[1])
+
         print(user_color_card_list)
         print(user_size_card_list)
-        return user_init_card_list, user_point_and_color_card_list, user_color_card_list, user_size_card_list
+        return user_color_card_list, user_size_card_list
 
-    @staticmethod
-    def round_init_pool_user_info_dict(username_list, info, chips_pool, low_chips):
+    def round_init_pool_user_info_dict(self, username_list, info, chips_pool, low_chips):
         # 状态初始化
         for item in username_list:
             if not info[item]['disuse']:
@@ -199,6 +199,14 @@ class CardMethod:
         info['not_folded_list'] = []
         info['chips_pool'] = chips_pool
         info['low_chips'] = low_chips
+        # 生成 当前未淘汰的玩家的牌
+        user_color_card_list, user_size_card_list = self.get_cards(len(username_list))
+        # 将牌的花色以及大小写入字典
+        for idx, items in enumerate(username_list):
+            if not info[items]['disuse']:
+                info[items]["color_card"] = user_color_card_list[idx]
+                info[items]["size_card"] = user_size_card_list[idx]
+
 
     @staticmethod
     def generate_user_info(user_count, user_init_chips):

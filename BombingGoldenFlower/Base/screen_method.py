@@ -75,8 +75,10 @@ class ScreenMethod:
     def draw(self, surf, pos):
         self.screen.blit(surf, pos)
 
-    def check_clicked(self, pos):
-        pass
+    def check_clicked(self, group, pos):
+        for each in group:
+            if each.collidepoint(pos):
+                return
 
     def get_rect_group(self, dict_text):
         f = pg.font.Font(self.cfg.BUTTON_FONT_PATH, self.cfg.BUTTON_FONT_SIZE)

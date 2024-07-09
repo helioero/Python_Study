@@ -12,7 +12,7 @@ from BombingGoldenFlower.Base.screen_method import ScreenMethod
 class GameGUI(CardMethod, ScreenMethod):
     user_count = 0
     user_init_chips = 0
-    user_info_dict_list = {}
+    info = {}
     user_init_card_list = []
     user_color_card_list = []
     user_point_and_color_card_list = []
@@ -27,13 +27,13 @@ class GameGUI(CardMethod, ScreenMethod):
         if self.user_count > 17:
             print('此游戏最多17人玩')
             exit(1)
-        self.user_info_dict_list = self.generate_user_info(self.user_count, self.user_init_chips)
+        self.info = self.generate_user_info(self.user_count, self.user_init_chips)
         self.get_cards(self.user_count)
         # 将牌的花色以及大小写入字典
-        for idx, items in enumerate(self.user_info_dict_list['username_list']):
-            if not self.user_info_dict_list[items]['disuse']:
-                self.user_info_dict_list[items]["color_card"] = self.user_color_card_list[idx]
-                self.user_info_dict_list[items]["size_card"] = self.user_size_card_list[idx]
+        for idx, items in enumerate(self.info['username_list']):
+            if not self.info[items]['disuse']:
+                self.info[items]["color_card"] = self.user_color_card_list[idx]
+                self.info[items]["size_card"] = self.user_size_card_list[idx]
 
         print(self.user_color_card_list)
         print(self.user_size_card_list)
@@ -43,7 +43,6 @@ class GameGUI(CardMethod, ScreenMethod):
         # 初始化
         cfg = self.cfg
         screen = self.screen
-        info = self.user_info_dict_list
         # 背景图片
         background_convert = pg.image.load(cfg.BACKGROUND_PATH).convert()
         background = pg.transform.scale(background_convert, cfg.WINDOWS_SIZE)
@@ -59,13 +58,13 @@ class GameGUI(CardMethod, ScreenMethod):
         while True:
             # 初始化
             # 筹码池初始化
-            self.round_init_pool_user_info_dict(info['username_list'], info, info['chips_pool'], info['low_chips'])
+            self.round_init_pool_user_info_dict(self.info['username_list'], self.info, self.info['chips_pool'], self.info['low_chips'])
 
             # 如果 玩家 只剩一个，退出循环
-            if info['valid_user'] == 1:
+            if self.info['valid_user'] == 1:
                 print(f"{'*' * 80}")
                 print(
-                    f"{'*' * 2}/t/t游戏结束, 玩家 {info['not_folded_list'][0]} 是本次活动大赢家, 该玩家赢得筹码 {info[info['not_folded_list'][0]]['chips'] + 10}/t/t{'*' * 2}")
+                    f"{'*' * 2}/t/t游戏结束, 玩家 {self.info['not_folded_list'][0]} 是本次活动大赢家, 该玩家赢得筹码 {self.info[self.info['not_folded_list'][0]]['chips'] + 10}/t/t{'*' * 2}")
                 print(f"{'*' * 80}")
                 break
 
@@ -76,7 +75,7 @@ class GameGUI(CardMethod, ScreenMethod):
             # print(f"所有玩家扣除底注 {low_chips}")
 
             # 生成 当前已有玩家的牌
-            self.get_cards(info['valid_user'])
+            self.get_cards(self.info['valid_user'])
 
             # 初始化内部 while 循环变量
             rounds_over = False
