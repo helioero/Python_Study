@@ -161,6 +161,19 @@ class CardMethod:
 
         return winner_list
 
+    def get_cards(self, users):
+        """ 将用户的牌生成以并计算牌面大小 """
+
+        user_init_card_list = self.post_cards(users)
+        user_point_and_color_card_list = self.compute_card_point(user_init_card_list)
+
+        user_color_card_list = self.print_color_card(user_init_card_list)
+        user_size_card_list = self.compute_winner_size(user_point_and_color_card_list[0],
+                                                       user_point_and_color_card_list[1])
+        print(user_color_card_list)
+        print(user_size_card_list)
+        return user_init_card_list, user_point_and_color_card_list, user_color_card_list, user_size_card_list
+
     @staticmethod
     def round_init_pool_user_info_dict(username_list, info, chips_pool, low_chips):
         # 状态初始化
@@ -184,7 +197,8 @@ class CardMethod:
         info['checked_count'] = 0
         info['not_drop_card_count'] = info['valid_user']
         info['not_folded_list'] = []
-        return chips_pool, low_chips
+        info['chips_pool'] = chips_pool
+        info['low_chips'] = low_chips
 
     @staticmethod
     def generate_user_info(user_count, user_init_chips):
@@ -204,6 +218,8 @@ class CardMethod:
         user_info['not_drop_card_count'] = user_info['valid_user']
         user_info['not_folded_list'] = []
         user_info['username_list'] = username_list
+        user_info['chips_pool'] = 0
+        user_info['low_chips'] = 10
 
         return user_info
 
