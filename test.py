@@ -60,13 +60,13 @@ button_text_image = pg.font.Font('BombingGoldenFlower/Resources/Font/WeiRuanYaHe
 
 f = pg.font.Font('BombingGoldenFlower/Resources/Font/WeiRuanYaHei.ttf', 30)
 # 生成文本信息, 消除字体锯齿，字体颜色，背景颜色, 颜色用RGB表示
-text = f.render("点 我", True, button_color, button_background)
+text = f.render("50", True, button_color, button_background)
 # 获得显示对象的rect 区域坐标
 textRect = text.get_rect()
+print(textRect)
 # 设置显示对象居中
 textRect.center = button_position
-
-
+print(textRect)
 
 check_status = False
 uncheck_status = False
@@ -91,22 +91,23 @@ while True:
 
     # 将绘制的图像添加到主屏幕上，（100，100） 是位置坐标, 显示屏左上角是 0，0
     if check_status:
-        screen.blit(text, textRect)
+        pass
+        # screen.blit(text, textRect)
         # 默认盲注值
         # screen.blit(button_image, (400, 504))
         # screen.blit(button_text_image, (404, 504))
         # 50
-        screen.blit(button_image, (550, 504))
-        screen.blit(button_text_image, (554, 504))
-        # 100
-        screen.blit(button_image, (700, 504))
-        screen.blit(button_text_image, (704, 504))
-        # 点击一次 默认值+=20
-        screen.blit(button_image, (850, 504))
-        screen.blit(button_text_image, (854, 504))
-        # 弃牌
-        screen.blit(button_image, (1000, 504))
-        screen.blit(button_text_image, (1004, 504))
+        # screen.blit(button_image, (550, 504))
+        # screen.blit(button_text_image, (554, 504))
+        # # 100
+        # screen.blit(button_image, (700, 504))
+        # screen.blit(button_text_image, (704, 504))
+        # # 点击一次 默认值+=20
+        # screen.blit(button_image, (850, 504))
+        # screen.blit(button_text_image, (854, 504))
+        # # 弃牌
+        # screen.blit(button_image, (1000, 504))
+        # screen.blit(button_text_image, (1004, 504))
     else:
 
         screen.blit(text, textRect)
@@ -114,20 +115,20 @@ while True:
         # screen.blit(button_image, (300, 504))
         # screen.blit(button_text_image, (304, 504))
         # 默认盲注值
-        screen.blit(button_image, (450, 504))
-        screen.blit(button_text_image, (454, 504))
-        # 50
-        screen.blit(button_image, (600, 504))
-        screen.blit(button_text_image, (604, 504))
-        # 100
-        screen.blit(button_image, (750, 504))
-        screen.blit(button_text_image, (754, 504))
-        # 点击一次 默认值+=20
-        screen.blit(button_image, (900, 504))
-        screen.blit(button_text_image, (904, 504))
-        # 弃牌
-        screen.blit(button_image, (1050, 504))
-        screen.blit(button_text_image, (1054, 504))
+        # screen.blit(button_image, (450, 504))
+        # screen.blit(button_text_image, (454, 504))
+        # # 50
+        # screen.blit(button_image, (600, 504))
+        # screen.blit(button_text_image, (604, 504))
+        # # 100
+        # screen.blit(button_image, (750, 504))
+        # screen.blit(button_text_image, (754, 504))
+        # # 点击一次 默认值+=20
+        # screen.blit(button_image, (900, 504))
+        # screen.blit(button_text_image, (904, 504))
+        # # 弃牌
+        # screen.blit(button_image, (1050, 504))
+        # screen.blit(button_text_image, (1054, 504))
 
     # 3张卡牌
     screen.blit(image_roto, (490, 600))

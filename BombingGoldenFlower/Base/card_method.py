@@ -6,6 +6,10 @@ from random import choice, shuffle, randint
 
 
 class CardMethod:
+    user_init_card_list = {}
+    user_point_and_color_card_list = {}
+    user_color_card_list = {}
+    user_size_card_list = {}
 
     @staticmethod
     def post_cards(user_count):
@@ -164,16 +168,16 @@ class CardMethod:
     def get_cards(self, users):
         """ 将用户的牌生成以并计算牌面大小 """
 
-        user_init_card_list = self.post_cards(users)
-        user_point_and_color_card_list = self.compute_card_point(user_init_card_list)
+        self.user_init_card_list = self.post_cards(users)
+        self.user_point_and_color_card_list = self.compute_card_point(self.user_init_card_list)
 
-        user_color_card_list = self.print_color_card(user_init_card_list)
-        user_size_card_list = self.compute_winner_size(user_point_and_color_card_list[0],
-                                                       user_point_and_color_card_list[1])
+        self.user_color_card_list = self.print_color_card(self.user_init_card_list)
+        self.user_size_card_list = self.compute_winner_size(
+            self.user_point_and_color_card_list[0], self.user_point_and_color_card_list[1])
 
-        print(user_color_card_list)
-        print(user_size_card_list)
-        return user_color_card_list, user_size_card_list
+        print(self.user_init_card_list)
+        print(self.user_color_card_list)
+        print(self.user_size_card_list)
 
     def round_init_pool_user_info_dict(self, username_list, info, chips_pool, low_chips):
         # 状态初始化
@@ -200,13 +204,13 @@ class CardMethod:
         info['chips_pool'] = chips_pool
         info['low_chips'] = low_chips
         # 生成 当前未淘汰的玩家的牌
-        user_color_card_list, user_size_card_list = self.get_cards(len(username_list))
+        self.get_cards(len(username_list))
         # 将牌的花色以及大小写入字典
-        for idx, items in enumerate(username_list):
-            if not info[items]['disuse']:
-                info[items]["color_card"] = user_color_card_list[idx]
-                info[items]["size_card"] = user_size_card_list[idx]
-
+        for idx, username in enumerate(username_list):
+            if not info[username]['disuse']:
+                info[username]['color_card'] = self.user_color_card_list[idx]
+                info[username]['size_card'] = self.user_size_card_list[idx]
+                info[username]['init_card'] = self.user_init_card_list[idx]
 
     @staticmethod
     def generate_user_info(user_count, user_init_chips):
