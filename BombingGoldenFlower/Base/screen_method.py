@@ -20,18 +20,18 @@ class Config:
 
     # 位置
     BUTTON_POSITION_DICT = {
-        'checked': [(400, 525), (550, 525), (700, 525), (850, 525), (1000, 525)],
-        'uncheck': [(350, 525), (500, 525), (650, 525), (800, 525), (950, 525), (1100, 525)],
+        'operate': [(350, 525), (500, 525), (650, 525), (800, 525), (950, 525), (1100, 525), (350, 525)],
         'chips': [(680, 350), (1200, 700)],
-        'restart': [(40, 40)]
+        'restart': [(40, 40)],
+        'winner': [(550, 450)]
     }
     POKER_POSITION = [(490, 600), (690, 600), (890, 600)]
     # 按钮text
     BUTTON_TEXT_DIST = {
-        'checked': ['跟 注', '50', '100', '全 压', '弃 牌'],
-        'uncheck': ['看 牌', '跟 注', '50', '100', '全 压', '弃 牌'],
+        'operate': ['看 牌', '跟 注', '+50', '+100', '全 压', '弃 牌', '开 牌'],
         'chips': ['筹码池:  ', '我的筹码:  '],
-        'restart': ['重 开']
+        'restart': ['重 开'],
+        'winner': [' 赢，赢得筹码 ']
     }
 
     # 字体
@@ -74,13 +74,15 @@ class ScreenMethod:
     def draw(self, surf, pos):
         self.screen.blit(surf, pos)
 
-    @ staticmethod
+    @staticmethod
     def check_rect_clicked(rect_type, pos):
         if rect_type.collidepoint(pos):
             return True
 
-    def check_clicked(self, rect_list, pos, text):
+    def check_clicked(self, info, username, rect_list, pos, text):
         for idx, each in enumerate(rect_list):
+            if info[username]['view'] and idx == 0:
+                continue
             if self.check_rect_clicked(each, pos):
                 print(self.cfg.BUTTON_TEXT_DIST[text][idx])
                 return self.cfg.BUTTON_TEXT_DIST[text][idx]
@@ -98,21 +100,43 @@ class ScreenMethod:
         text_rect.center = pos
         return text_rect
 
-    def is_selected(self, username, select_text, info):
-        match self.cfg.BUTTON_TEXT_DIST['checked'].index(select_text):
+    def is_selected(self, username, select_text, info, text):
+        idx = self.cfg.BUTTON_TEXT_DIST[text].index(select_text)
+
+        match idx:
             case 0:
+                info[username]['view'] = True
+                info['unchecked_count'] -= 1
+                info['checked_count'] += 1
+            case 1:
                 info['chips_pool'] += info['low_chips']
                 info[username]['chips'] -= info['low_chips']
-            case 1:
+                info['last_follow_chips'] += info['low_chips']
+            case 2:
                 info['chips_pool'] += 50
                 info[username]['chips'] -= 50
-            case 2:
+                info['last_follow_chips'] += 50
+            case 3:
                 info['chips_pool'] += 100
                 info[username]['chips'] -= 100
-            case 3:
-                info['chips_pool'] += info['chips']
-                info[username]['chips'] = 0
+                info['last_follow_chips'] += 100
             case 4:
+                info['chips_pool'] += info[username]['chips']
+                info[username]['chips'] = 0
+                info['last_follow_chips'] += info[username]['chips']
+                info[username]['all_in'] = True
+            case 5:
                 info[username]['drop'] = True
-            case _:
-                return False
+                info['not_drop_user_list'].remove(username)
+                info['not_drop_card_count'] -= 1
+        if idx == 6 and len(info['not_drop_user_list']) == 2 and info['unchecked_count'] == 0:
+            info['open_card'] = True
+            info['chips_pool'] += info['low_chips']
+            info[username]['chips'] -= info['low_chips']
+            return True
+        elif idx in range(len(self.cfg.BUTTON_TEXT_DIST[text])) and idx != 0 and idx != 6:
+            return True
+        else:
+            return False
+
+

@@ -179,7 +179,7 @@ class CardMethod:
         print(self.user_color_card_list)
         print(self.user_size_card_list)
 
-    def round_init_pool_user_info_dict(self, username_list, info, chips_pool, low_chips):
+    def reinit_info(self, username_list, info, chips_pool, low_chips):
         # 状态初始化
         for item in username_list:
             if not info[item]['disuse']:
@@ -188,8 +188,10 @@ class CardMethod:
                     info[item]['view'] = False
                     info[item]['drop'] = False
                     info[item]['win'] = False
+                    info[item]['all_in'] = False
                     info[item]['chips'] -= low_chips
                     chips_pool += low_chips
+                    info['not_drop_user_list'].append(item)
                 else:
                     # 玩家筹码不足，淘汰
                     print(f"玩家 {item} 剩余筹码 {info[item]['chips']} ，筹码不足，请充值或退出")
@@ -200,9 +202,10 @@ class CardMethod:
         info['unchecked_count'] = info['valid_user']
         info['checked_count'] = 0
         info['not_drop_card_count'] = info['valid_user']
-        info['not_folded_list'] = []
         info['chips_pool'] = chips_pool
         info['low_chips'] = low_chips
+        info['last_follow_chips'] = low_chips
+        info['open_card'] = False
         # 生成 当前未淘汰的玩家的牌
         self.get_cards(len(username_list))
         # 将牌的花色以及大小写入字典
@@ -219,7 +222,7 @@ class CardMethod:
         username_list = []
         for i in range(user_count):
             username = str(randint(1000, 10000))
-            dict_v = {'view': False, 'drop': False, 'disuse': False, 'win': False, 'color_card': [], 'size_card': 0,
+            dict_v = {'view': False, 'drop': False, 'disuse': False, 'win': False, 'all_in': False, 'color_card': [], 'size_card': 0,
                       'chips': user_init_chips}
             username_list.append(username)
             user_info[username] = dict_v
@@ -228,11 +231,12 @@ class CardMethod:
         user_info['unchecked_count'] = user_info['valid_user']
         user_info['checked_count'] = 0
         user_info['not_drop_card_count'] = user_info['valid_user']
-        user_info['not_folded_list'] = []
+        user_info['not_drop_user_list'] = []
         user_info['username_list'] = username_list
         user_info['chips_pool'] = 0
         user_info['low_chips'] = 10
-
+        user_info['last_follow_chips'] = 0
+        user_info['open_card'] = False
         return user_info
 
     @staticmethod

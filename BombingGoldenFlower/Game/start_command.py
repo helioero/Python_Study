@@ -67,15 +67,15 @@ class Game(CardMethod):
 
             # 初始化
             # 筹码池 以及牌初始化
-            self.round_init_pool_user_info_dict(self.info['username_list'], self.info, self.info['chips_pool'],
+            self.reinit_info(self.info['username_list'], self.info, self.info['chips_pool'],
                                                 self.info['low_chips'])
 
             # 如果 玩家 只剩一个，退出循环
             if self.info['valid_user'] == 1:
                 print(f"{'*' * 100}")
                 print(
-                    f"{'*' * 10}/t/t游戏结束, 玩家 {self.info['not_folded_list'][0]} 是本次活动大赢家 /t/t{'*' * 10}\n"
-                    f"{'*' * 10}/t/t该玩家赢得筹码 {self.info[self.info['not_folded_list'][0]]['chips'] + 10}/t/t{'*' * 10}")
+                    f"{'*' * 10}/t/t游戏结束, 玩家 {self.info['not_drop_user_list'][0]} 是本次活动大赢家 /t/t{'*' * 10}\n"
+                    f"{'*' * 10}/t/t该玩家赢得筹码 {self.info[self.info['not_drop_user_list'][0]]['chips'] + 10}/t/t{'*' * 10}")
 
                 print(f"{'*' * 80}")
                 break
@@ -120,8 +120,8 @@ class Game(CardMethod):
                         view_card = input("请输入 1 回车后看牌， 按任意键回车后不看牌: ")
 
                     if view_card == '1':
-                        if username not in self.info['not_folded_list']:
-                            self.info['not_folded_list'].append(username)
+                        if username not in self.info['not_drop_user_list']:
+                            self.info['not_drop_user_list'].append(username)
                             self.info[username]['view'] = True
                             self.info['unchecked_count'] -= 1
                         print(f"玩家 {username} 的牌是： {self.info[username]['color_card']}")
@@ -132,7 +132,7 @@ class Game(CardMethod):
                         if choose_view_card == '1':
                             self.info[username]['drop'] = True
                             self.info['not_drop_card_count'] -= 1
-                            self.info['not_folded_list'].remove(username)
+                            self.info['not_drop_user_list'].remove(username)
                             print(
                                 f"玩家 {username} 弃牌, 当前池子筹码为 {self.info['chips_pool']}, 剩余玩家 {self.info['not_drop_card_count']}")
                             continue
@@ -162,20 +162,20 @@ class Game(CardMethod):
                             f"当前玩家剩余 {self.info['not_drop_card_count']} ，请输入 1/2 (1. 开牌 2. 不开牌): ")
                         if open_card == '1':
                             print(
-                                f"玩家 {self.info['not_folded_list'][0]} 的牌为  {self.info[self.info['not_folded_list'][0]]['color_card']}")
+                                f"玩家 {self.info['not_drop_user_list'][0]} 的牌为  {self.info[self.info['not_drop_user_list'][0]]['color_card']}")
                             print(
-                                f"玩家 {self.info['not_folded_list'][1]} 的牌为  {self.info[self.info['not_folded_list'][1]]['color_card']}")
-                            if self.info[self.info['not_folded_list'][0]]['size_card'] > self.info[self.info['not_folded_list'][1]]['size_card']:
-                                self.info[self.info['not_folded_list'][0]]['chips'] += self.info['chips_pool']
+                                f"玩家 {self.info['not_drop_user_list'][1]} 的牌为  {self.info[self.info['not_drop_user_list'][1]]['color_card']}")
+                            if self.info[self.info['not_drop_user_list'][0]]['size_card'] > self.info[self.info['not_drop_user_list'][1]]['size_card']:
+                                self.info[self.info['not_drop_user_list'][0]]['chips'] += self.info['chips_pool']
                                 print(f"{'*' * 50}")
                                 print(
-                                    f"**   玩家 {self.info['not_folded_list'][0]} 赢，赢得筹码 {self.info['chips_pool']}, 剩余 {self.info[self.info['not_folded_list'][0]]['chips']} 筹码  **")
+                                    f"**   玩家 {self.info['not_drop_user_list'][0]} 赢，赢得筹码 {self.info['chips_pool']}, 剩余 {self.info[self.info['not_drop_user_list'][0]]['chips']} 筹码  **")
                                 print(f"{'*' * 50}")
                             else:
-                                self.info[self.info['not_folded_list'][1]]['chips'] += self.info['chips_pool']
+                                self.info[self.info['not_drop_user_list'][1]]['chips'] += self.info['chips_pool']
                                 print(f"{'*' * 50}")
                                 print(
-                                    f"**   玩家 {self.info['not_folded_list'][1]} 赢，赢得筹码 {self.info['chips_pool']}, 剩余 {self.info[self.info['not_folded_list'][1]]['chips']} 筹码  **")
+                                    f"**   玩家 {self.info['not_drop_user_list'][1]} 赢，赢得筹码 {self.info['chips_pool']}, 剩余 {self.info[self.info['not_drop_user_list'][1]]['chips']} 筹码  **")
                                 print(f"{'*' * 50}")
                             # 局数累加
                             print(f"{'-' * 50} 第 {round_count} 局结束 {'-' * 50}")
