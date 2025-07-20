@@ -2,7 +2,7 @@
     此文件用于实现游戏启动等相关方法
 """
 
-from BombingGoldenFlower.Base.card_method import CardMethod
+from Base.card_method import CardMethod
 
 
 class Game(CardMethod):

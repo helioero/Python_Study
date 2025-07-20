@@ -5,8 +5,8 @@ import sys
 from time import sleep
 import pygame as pg
 
-from BombingGoldenFlower.Base.card_method import CardMethod
-from BombingGoldenFlower.Base.screen_method import ScreenMethod
+from Base.card_method import CardMethod
+from Base.screen_method import ScreenMethod
 
 
 class GameGUI(CardMethod, ScreenMethod):
@@ -188,5 +188,5 @@ class GameGUI(CardMethod, ScreenMethod):
                     break
 
 
-g = GameGUI(3)
-g.start()
+# g = GameGUI(3)
+# g.start()
